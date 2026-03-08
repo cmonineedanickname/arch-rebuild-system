@@ -160,6 +160,27 @@ mark_layer_explicit() {
   fi
 }
 
+enable_services() {
+  local file="$1"
+  local label="$2"
+
+  [[ -f "$file" ]] || return 0
+  [[ -s "$file" ]] || return 0
+
+  echo
+  echo "==> Enabling $label services"
+
+  while read -r service; do
+    [[ -z "$service" ]] && continue
+
+    if $DRY_RUN; then
+      echo "Would enable $service.service"
+    else
+      sudo systemctl enable "$service.service"
+    fi
+  done < "$file"
+}
+
 if $UPDATE_SYSTEM; then
   echo
   echo "==> Updating system"
@@ -194,6 +215,11 @@ $WANT_DEV && mark_layer_explicit "$BASE/dev.txt"
 $WANT_LAPTOP && mark_layer_explicit "$BASE/laptop.txt"
 $WANT_MACHINE && mark_layer_explicit "$BASE/machine.txt"
 $WANT_AUR && mark_layer_explicit "$BASE/aur.txt"
+
+$WANT_CORE && enable_services "$REPO_ROOT/services/core.txt" "core"
+$WANT_DESKTOP && enable_services "$REPO_ROOT/services/desktop.txt" "desktop"
+$WANT_LAPTOP && enable_services "$REPO_ROOT/services/laptop.txt" "laptop"
+$WANT_MACHINE && enable_services "$REPO_ROOT/services/machine.txt" "machine"
 
 echo
 echo "Done."
