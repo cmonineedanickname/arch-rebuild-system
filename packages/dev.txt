@@ -1,0 +1,14 @@
+clang
+cmake
+gdb
+go
+gradle
+jdk17-openjdk
+lldb
+ninja
+nodejs
+npm
+postgresql-libs
+python-gobject
+python-pip
+rust

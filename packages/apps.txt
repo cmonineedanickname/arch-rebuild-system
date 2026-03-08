@@ -1,0 +1,17 @@
+calc
+chromium
+code
+discord
+firefox
+flatpak
+gsfonts
+imagemagick
+mesa-utils
+mpv
+obsidian
+qbittorrent
+steam
+vulkan-tools
+yt-dlp
+zathura
+zathura-pdf-mupdf
