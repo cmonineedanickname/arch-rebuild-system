@@ -87,7 +87,7 @@ install_repo_layer() {
   if $DRY_RUN; then
     cat "$file"
   else
-    sudo pacman -S --needed --asexplicit - < "$file"
+    sudo pacman -S --needed - < "$file"
   fi
 }
 
@@ -107,7 +107,7 @@ bootstrap_yay() {
   fi
 
   if ! pacman -Q git >/dev/null 2>&1; then
-    sudo pacman -S --needed --asexplicit git
+    sudo pacman -S --needed git
   fi
 
   local tmpdir
@@ -143,7 +143,20 @@ install_aur_layer() {
     cat "$file"
   else
     bootstrap_yay
-    yay -S --needed --asexplicit --answerclean None --answerdiff None - < "$file"
+    yay -S --needed --answerclean None --answerdiff None - < "$file"
+  fi
+}
+
+mark_layer_explicit() {
+  local file="$1"
+
+  [[ -f "$file" ]] || return 0
+  [[ -s "$file" ]] || return 0
+
+  if $DRY_RUN; then
+    echo "Would mark packages from $file as explicit"
+  else
+    xargs sudo pacman -D --asexplicit $(<"$file")
   fi
 }
 
@@ -173,6 +186,14 @@ $WANT_DEV && install_repo_layer "$BASE/dev.txt" "Dev"
 $WANT_LAPTOP && install_repo_layer "$BASE/laptop.txt" "Laptop"
 $WANT_MACHINE && install_repo_layer "$BASE/machine.txt" "Machine-specific"
 $WANT_AUR && install_aur_layer "$BASE/aur.txt"
+
+$WANT_CORE && mark_layer_explicit "$BASE/core.txt"
+$WANT_DESKTOP && mark_layer_explicit "$BASE/desktop.txt"
+$WANT_APPS && mark_layer_explicit "$BASE/apps.txt"
+$WANT_DEV && mark_layer_explicit "$BASE/dev.txt"
+$WANT_LAPTOP && mark_layer_explicit "$BASE/laptop.txt"
+$WANT_MACHINE && mark_layer_explicit "$BASE/machine.txt"
+$WANT_AUR && mark_layer_explicit "$BASE/aur.txt"
 
 echo
 echo "Done."
