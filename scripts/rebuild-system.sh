@@ -13,6 +13,7 @@ WANT_DEV=false
 WANT_LAPTOP=false
 WANT_MACHINE=false
 WANT_AUR=false
+UPDATE_SYSTEM=false
 
 usage() {
   cat <<'EOF'
@@ -29,6 +30,7 @@ Options:
   --aur         Install AUR layer
   --all         Install all repo layers + AUR
   --dry-run     Print what would be installed without doing it
+  --update      Run pacman -Syu before installing layers
   -h, --help    Show this help
 EOF
 }
@@ -42,6 +44,7 @@ for arg in "$@"; do
     --laptop) WANT_LAPTOP=true ;;
     --machine) WANT_MACHINE=true ;;
     --aur) WANT_AUR=true ;;
+    --update) UPDATE_SYSTEM=true ;;
     --all)
       WANT_CORE=true
       WANT_DESKTOP=true
@@ -126,6 +129,13 @@ install_aur_layer() {
     exit 1
   fi
 
+  if [[ ! -s "$file" ]]; then
+    echo
+    echo "==> AUR packages"
+    echo "AUR layer is empty, skipping."
+    return 0
+  fi
+
   echo
   echo "==> AUR packages"
 
@@ -136,6 +146,16 @@ install_aur_layer() {
     yay -S --needed --asexplicit --answerclean None --answerdiff None - < "$file"
   fi
 }
+
+if $UPDATE_SYSTEM; then
+  echo
+  echo "==> Updating system"
+  if $DRY_RUN; then
+    echo "sudo pacman -Syu"
+  else
+    sudo pacman -Syu
+  fi
+fi
 
 echo "Selected layers (fixed install order):"
 $WANT_CORE && echo " - core"
