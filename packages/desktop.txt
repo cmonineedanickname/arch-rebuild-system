@@ -2,6 +2,7 @@ blueman
 bluez
 bluez-utils
 brightnessctl
+cava
 ffmpegthumbnailer
 file-roller
 gnome-keyring
