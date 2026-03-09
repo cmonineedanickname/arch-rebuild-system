@@ -1,109 +1,291 @@
 # Arch Rebuild System
 
-Small rebuild system for my Arch Linux setup.
+## Overview
 
-The goal is to keep the system **lean and reproducible** by tracking:
+This repository contains a **reproducible rebuild system for an Arch Linux workstation/laptop setup**.
 
-* package layers
-* important system configuration
-* rebuild scripts
+The goal of the project is simple:
 
-Everything lives in `~/.local/rebuild-system`.
+> If the machine dies or the system needs to be rebuilt, the entire environment can be restored quickly from a clean Arch install.
+
+The rebuild system manages:
+
+* package installation
+* explicit vs dependency tracking
+* AUR packages
+* system services
+* configuration tracking
+* logical package layers
+
+The system has been **tested with full rebuilds inside a VM** to ensure it reliably reproduces the working environment.
 
 ---
 
-# Structure
+# Repository Structure
 
 ```
-rebuild-system/
-├── config/
-│   ├── pacman.conf
-│   └── greetd/
-│       └── config.toml
+arch-rebuild-system/
 │
-├── notes/
+├─ config/
+│  ├─ greetd/
+│  │   └─ config.toml
+│  └─ pacman.conf
 │
-├── packages/
-│   ├── core.txt
-│   ├── desktop.txt
-│   ├── apps.txt
-│   ├── dev.txt
-│   ├── laptop.txt
-│   ├── machine.txt
-│   └── aur.txt
+├─ packages/
+│  ├─ core.txt
+│  ├─ desktop.txt
+│  ├─ apps.txt
+│  ├─ dev.txt
+│  ├─ laptop.txt
+│  ├─ machine.txt
+│  └─ aur.txt
 │
-└── scripts/
-    ├── rebuild-system.sh
-    └── check-package-layers.sh
+├─ services/
+│  ├─ core.txt
+│  ├─ desktop.txt
+│  ├─ laptop.txt
+│  └─ machine.txt
+│
+├─ scripts/
+│  ├─ rebuild-system.sh
+│  └─ check-package-layers.sh
+│
+└─ README.md
 ```
 
 ---
 
-# Package Layers
+# Layer System
 
-Packages are grouped into layers inside `packages/`.
+The rebuild system organizes packages into **logical layers**.
 
-Install order:
+This makes the system easier to understand and allows rebuilding only specific parts if necessary.
 
-1. core
-2. desktop
-3. apps
-4. dev
-5. laptop
-6. machine
-7. aur
+| Layer   | Purpose                                             |
+| ------- | --------------------------------------------------- |
+| core    | base system tools and essential utilities           |
+| desktop | graphical environment (Hyprland, portals, UI tools) |
+| apps    | user applications                                   |
+| dev     | development tools                                   |
+| laptop  | laptop-specific tools (power management etc.)       |
+| machine | hardware or workstation specific tools              |
+| aur     | packages installed from the AUR                     |
 
-Each file contains a plain list of package names.
+Example rebuild:
+
+```
+./scripts/rebuild-system.sh --update --core --desktop
+```
+
+Full rebuild:
+
+```
+./scripts/rebuild-system.sh --update --all
+```
 
 ---
 
-# Rebuild
+# Package Installation Logic
 
-Install layers with:
-
-```
-./scripts/rebuild-system.sh --all
-```
-
-Or install specific layers:
+Packages are installed using:
 
 ```
-./scripts/rebuild-system.sh --core --desktop
+pacman -S --needed
 ```
 
-Dry run:
+After installation the rebuild script ensures that **only the packages defined in the layer files remain explicit**.
 
 ```
-./scripts/rebuild-system.sh --all --dry-run
+pacman -D --asexplicit
 ```
 
-The script installs repo packages via `pacman` and AUR packages via `yay`.
-If `yay` is missing it will be bootstrapped automatically.
+This ensures:
+
+* dependencies stay dependencies
+* layer packages remain explicit
+* the system stays clean
 
 ---
 
-# System Config
+# AUR Handling
 
-Important files from `/etc` are stored in `config/`.
+AUR packages are defined in:
 
-Currently tracked:
+```
+packages/aur.txt
+```
 
-* pacman.conf
-* greetd/config.toml
+The rebuild script installs AUR packages using **yay**.
+
+If yay is not installed, the script automatically bootstraps it:
+
+1. installs git
+2. clones the yay repository
+3. builds yay using `makepkg`
+4. installs all AUR packages
 
 ---
 
-# Package Audit
+# Service Management
 
-Check if the system matches the layer definitions:
+Services are managed through the **services layer system**.
+
+Each layer can define services that should be enabled.
+
+Example files:
 
 ```
-./scripts/check-package-layers.sh
+services/core.txt
+services/desktop.txt
+services/laptop.txt
+services/machine.txt
 ```
 
-This shows:
+Each file contains a list of systemd services that should be enabled.
+
+Example:
+
+```
+NetworkManager
+greetd
+power-profiles-daemon
+```
+
+During rebuild, the script enables these services automatically:
+
+```
+systemctl enable <service>.service
+```
+
+This ensures the rebuilt system starts the correct services without manual configuration.
+
+---
+
+# Drift Detection
+
+To prevent configuration drift, the repository includes:
+
+```
+scripts/check-package-layers.sh
+```
+
+This script compares:
+
+* installed explicit packages
+* packages defined in layer files
+
+It detects:
 
 * packages defined but not installed
-* installed packages not covered by a layer
-* duplicates across layers
+* explicit packages not defined in layers
+* duplicate packages across layers
+
+This keeps the rebuild definition clean and consistent.
+
+---
+
+# Example Rebuild Workflow
+
+Rebuilding a system typically looks like this:
+
+```
+install Arch
+install git
+clone repository
+run rebuild script
+copy configs
+reboot
+```
+
+Example:
+
+```
+git clone <repo>
+cd arch-rebuild-system
+./scripts/rebuild-system.sh --update --all
+```
+
+A full rebuild usually takes **10–15 minutes**.
+
+---
+
+# Design Philosophy
+
+The rebuild system is designed with several goals:
+
+### reproducibility
+
+A system should be rebuildable from scratch with minimal manual work.
+
+### transparency
+
+All installed packages are tracked in plain text files.
+
+### modularity
+
+Logical layers allow rebuilding only parts of the system.
+
+### maintainability
+
+Configuration drift can be detected and corrected easily.
+
+---
+
+# TODO
+
+Planned improvements.
+
+## Dotfile automation
+
+Currently configuration files are copied manually.
+
+Future goal:
+
+```
+config/
+→ automatically deployed to system
+```
+
+Possible targets:
+
+```
+/etc
+~/.config
+```
+
+---
+
+## Service verification
+
+Add tooling similar to package drift detection:
+
+* compare enabled services
+* verify services match layer definitions
+
+---
+
+## Improve rebuild script UX
+
+Possible improvements:
+
+* clearer logging
+* progress output
+* early sudo authentication
+
+---
+
+# Summary
+
+This project provides a **clean, layered, reproducible Arch Linux setup**.
+
+Key features:
+
+* layered package management
+* explicit dependency tracking
+* automatic AUR installation
+* automatic service enabling
+* drift detection tooling
+* rebuild validation in VM
+
+The system allows restoring a full workstation environment quickly and reliably from a fresh Arch install.
 
