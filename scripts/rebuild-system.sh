@@ -156,7 +156,7 @@ mark_layer_explicit() {
   if $DRY_RUN; then
     echo "Would mark packages from $file as explicit"
   else
-    xargs sudo pacman -D --asexplicit $(<"$file")
+    xargs sudo pacman -D --asexplicit < "$file"
   fi
 }
 
