@@ -11,7 +11,6 @@ greetd-tuigreet
 gst-plugin-pipewire
 hypridle
 hyprland
-hyprlauncher
 hyprlock
 hyprpicker
 hyprpolkitagent
@@ -35,14 +34,15 @@ playerctl
 qt5-wayland
 qt6-wayland
 qt6ct
+rofi
 swww
 thunar
-ttf-inconsolata
+ttf-hack
+ttf-hack-nerd
 uwsm
 waybar
 wev
 wireplumber
-wofi
 wpa_supplicant
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland

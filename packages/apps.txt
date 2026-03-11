@@ -3,8 +3,8 @@ chromium
 code
 discord
 firefox
+ffmpeg
 flatpak
-gsfonts
 imagemagick
 mesa-utils
 mpv
