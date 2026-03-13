@@ -25,7 +25,6 @@ noto-fonts-emoji
 nwg-look
 otf-font-awesome
 papirus-icon-theme
-pavucontrol
 pipewire
 pipewire-alsa
 pipewire-jack
@@ -42,6 +41,7 @@ ttf-hack-nerd
 uwsm
 waybar
 wev
+wiremix
 wireplumber
 wpa_supplicant
 xdg-desktop-portal-gtk

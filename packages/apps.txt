@@ -6,6 +6,7 @@ firefox
 ffmpeg
 flatpak
 imagemagick
+krita
 mesa-utils
 mpv
 obsidian

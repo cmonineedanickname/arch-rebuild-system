@@ -23,6 +23,7 @@ sudo
 tldr
 tmux
 tree
+tree-sitter-cli
 ufw
 unzip
 wget
