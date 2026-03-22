@@ -1,4 +1,3 @@
 bibata-cursor-theme
 proton-ge-custom-bin
-tty-clock
 zen-browser-bin

@@ -19,6 +19,7 @@ nmap
 reflector
 ripgrep
 rsync
+starship
 sudo
 tldr
 tmux
