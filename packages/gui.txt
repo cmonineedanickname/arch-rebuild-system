@@ -34,6 +34,7 @@ qt5-wayland
 qt6-wayland
 qt6ct
 rofi
+samba
 swww
 thunar
 ttf-hack

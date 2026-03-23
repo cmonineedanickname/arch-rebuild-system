@@ -1,0 +1,10 @@
+dnsmasq
+docker
+docker-compose
+edk2-ovmf
+guestfs-tools
+libvirt
+qemu-full
+swtpm
+virt-manager
+virt-viewer

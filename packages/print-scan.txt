@@ -1,0 +1,7 @@
+cups
+cups-pdf
+nss-mdns
+sane
+sane-airscan
+simple-scan
+system-config-printer

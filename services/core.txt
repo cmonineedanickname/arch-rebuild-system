@@ -1,1 +1,4 @@
 NetworkManager
+ufw
+sshd
+reflector

@@ -4,6 +4,7 @@ base-devel
 bash-completion
 bat
 btop
+efibootmgr
 eza
 fastfetch
 fd
@@ -11,15 +12,19 @@ fzf
 git
 github-cli
 less
+linux
+linux-firmware
 man-db
 man-pages
 networkmanager
 neovim
 nmap
+ntfs-3g
 reflector
 ripgrep
 rsync
 starship
+stow
 sudo
 tldr
 tmux
