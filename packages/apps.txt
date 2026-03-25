@@ -9,8 +9,11 @@ imagemagick
 krita
 mesa-utils
 mpv
+mpv-mpris
 obsidian
+pdftk
 qbittorrent
+spotify-player
 steam
 vulkan-tools
 yt-dlp

@@ -1,4 +1,4 @@
-blueman
+awww
 bluez
 bluez-utils
 brightnessctl
@@ -9,6 +9,8 @@ gnome-keyring
 gnome-themes-extra
 greetd-tuigreet
 gst-plugin-pipewire
+gvfs
+gvfs-smb
 hypridle
 hyprland
 hyprlock
@@ -35,8 +37,10 @@ qt6-wayland
 qt6ct
 rofi
 samba
-swww
 thunar
+thunar-archive-plugin
+thunar-volman
+tumbler
 ttf-hack
 ttf-hack-nerd
 uwsm

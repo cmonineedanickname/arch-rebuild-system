@@ -20,6 +20,7 @@ networkmanager
 neovim
 nmap
 ntfs-3g
+openssh
 reflector
 ripgrep
 rsync

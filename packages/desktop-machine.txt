@@ -1,4 +1,5 @@
 amd-ucode
+ddcutil
 mesa
 vulkan-radeon
 lib32-mesa
