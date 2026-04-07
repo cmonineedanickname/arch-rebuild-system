@@ -1,3 +1,4 @@
 bibata-cursor-theme
 proton-ge-custom-bin
 zen-browser-bin
+rustdesk-bin
